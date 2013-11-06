@@ -41,6 +41,7 @@
 #include "lighting.h"
 
 #include <QtWidgets>
+#include <QtOpenGL/QGLWidget>
 
 #ifndef M_PI
 # define M_PI 3.14159265358979323846
@@ -48,8 +49,13 @@
 
 Lighting::Lighting(QWidget *parent): QGraphicsView(parent), angle(0.0)
 {
-	setScene(&m_scene);
+	//tu komentuj----------
+	setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
+	setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
+	update();
+	//tu skończ
 
+	setScene(&m_scene);
 	setupScene();
 
 	QTimer *timer = new QTimer(this);
@@ -65,10 +71,10 @@ void Lighting::setupScene()
 {
 	m_scene.setSceneRect(-300, -200, 600, 460);
 
-	QLinearGradient linearGrad(QPointF(-100, -100), QPointF(100, 100));
-	linearGrad.setColorAt(0, QColor(255, 255, 255));
-	linearGrad.setColorAt(1, QColor(192, 192, 255));
-	setBackgroundBrush(linearGrad);
+	//QLinearGradient linearGrad(QPointF(-100, -100), QPointF(100, 100));
+	//linearGrad.setColorAt(0, QColor(255, 255, 255));
+	//linearGrad.setColorAt(1, QColor(192, 192, 255));
+	setBackgroundBrush(QColor(0, 0, 0));
 
 	QRadialGradient radialGrad(30, 30, 30);
 	radialGrad.setColorAt(0, Qt::yellow);
@@ -86,23 +92,23 @@ void Lighting::setupScene()
 	m_lightSource->setZValue(2);
 
 	for (int i = -2; i < 3; ++i)
-	for (int j = -2; j < 3; ++j) {
-	 QAbstractGraphicsShapeItem *item;
-	 if ((i + j) & 1)
-	 item = new QGraphicsEllipseItem(0, 0, 50, 50);
-	 else
-	 item = new QGraphicsRectItem(0, 0, 50, 50);
+		for (int j = -2; j < 3; ++j) {
+			QAbstractGraphicsShapeItem *item;
+			if ((i + j) & 1)
+				item = new QGraphicsEllipseItem(0, 0, 50, 50);
+			else
+				item = new QGraphicsRectItem(0, 0, 50, 50);
 
-	 item->setPen(QPen(Qt::black, 1));
-	 item->setBrush(QBrush(Qt::white));
-	 QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
-	 effect->setBlurRadius(8);
-	 item->setGraphicsEffect(effect);
-	 item->setZValue(1);
-	 item->setPos(i * 80, j * 80);
-	 m_scene.addItem(item);
-	 m_items << item;
-   }
+			item->setPen(QPen(Qt::black, 1));
+			item->setBrush(QBrush(Qt::white));
+			QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
+			effect->setBlurRadius(8);
+			item->setGraphicsEffect(effect);
+			item->setZValue(1);
+			item->setPos(i * 80, j * 80);
+			m_scene.addItem(item);
+			m_items << item;
+		}
 
 }
 
