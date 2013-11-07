@@ -49,11 +49,11 @@
 
 Lighting::Lighting(QWidget *parent): QGraphicsView(parent), angle(0.0)
 {
-	//tu komentuj----------
+	#ifdef USEGL
 	setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DirectRendering)));
 	setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 	update();
-	//tu skończ
+	#endif
 
 	setScene(&m_scene);
 	setupScene();
@@ -101,9 +101,11 @@ void Lighting::setupScene()
 
 			item->setPen(QPen(Qt::black, 1));
 			item->setBrush(QBrush(Qt::white));
+			#ifndef NOSHADOW
 			QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
 			effect->setBlurRadius(8);
 			item->setGraphicsEffect(effect);
+			#endif
 			item->setZValue(1);
 			item->setPos(i * 80, j * 80);
 			m_scene.addItem(item);
@@ -122,6 +124,7 @@ void Lighting::animate()
 	for (int i = 0; i < m_items.size(); ++i) {
 	 QGraphicsItem *item = m_items.at(i);
 	 Q_ASSERT(item);
+	#ifndef NOSHADOW
 	 QGraphicsDropShadowEffect *effect = static_cast<QGraphicsDropShadowEffect *>(item->graphicsEffect());
 	 Q_ASSERT(effect);
 
@@ -134,6 +137,7 @@ void Lighting::animate()
 	 QColor color = effect->color();
 	 color.setAlphaF(qBound(0.4, 1 - dd / 200.0, 0.7));
 	 effect->setColor(color);
+	#endif
    }
 
 	m_scene.update();
